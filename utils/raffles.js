@@ -25,19 +25,19 @@ const getAllRaffles = async() => {
 
 //ADD RAFFLE
 const addRaffle = async(e) => {
-    console.log(e)
-    const addRaffleForm = document.querySelector('.add')
-    addRaffleForm.addEventListener('submit', (e)=>{
-        e.preventDefault()
+    // console.log(e)
+    // const addRaffleForm = document.querySelector('.add')
+    // addRaffleForm.addEventListener('submit', (e)=>{
+    //     e.preventDefault()
     
-        addDoc(colRef, {
-            name: addRaffleForm.name.value,
-            description: addRaffleForm.description.value
-        })
-        .then(() => {
-            addRaffleForm.reset()
-        })
-    })
+    //     addDoc(colRef, {
+    //         name: addRaffleForm.name.value,
+    //         description: addRaffleForm.description.value
+    //     })
+    //     .then(() => {
+    //         addRaffleForm.reset()
+    //     })
+    // })
 }
 
 //DELETE RAFFLE
