@@ -1,9 +1,12 @@
 import Head from 'next/head'
 import Image from 'next/image'
-import styles from '../styles/Home.module.css'
 import navbar from './components/navbar'
+import { useEthers, useEtherBalance } from '@usedapp/core'
+
 export default function Home() {
-  console.log(process.env.NEXT_PUBLIC_TWITTER_CONSUMER_KEY)
+  const { activateBrowserWallet, deactivate, account } = useEthers()
+
+
   return (
     <div class="bg-slate-50 min-w-screen min-h-screen">
       <Head>
@@ -13,12 +16,19 @@ export default function Home() {
       </Head>
       <main class="bg-slate-50 min-w-screen min-h-screen">
 
+        {!account && <button
+                       onClick={activateBrowserWallet}>connect wallet</button>}
+        {account && 
+          <div>
+            <div>
+              raffles made
+            </div> 
+            <div>
+              raffles entered
+            </div>
+          </div>   
+        }
       </main>
-
-
-      <footer className={styles.footer}>
-        built by johans.eth and taipeicity.eth
-      </footer>
   </div>
   )
 }
