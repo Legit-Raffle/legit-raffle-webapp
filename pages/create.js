@@ -85,10 +85,6 @@ const create = () => {
         </div>
       </div>
     </main>
-
-    <footer className={styles.footer}>
-      built by johans.eth and taipeicity.eth
-    </footer>
   </div>
   )
 }
