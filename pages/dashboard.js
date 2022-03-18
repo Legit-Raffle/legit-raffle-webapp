@@ -4,7 +4,6 @@ import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import { useEffect, useState } from "react"
 import { useRouter } from 'next/router'
-import {addRaffle, getAllRaffles} from '../utils/raffles';
 import { useEthers, useEtherBalance } from '@usedapp/core'
 
 const dashboard = () => {

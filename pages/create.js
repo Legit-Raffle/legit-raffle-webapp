@@ -2,18 +2,27 @@ import React from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import { ethers } from "ethers"
+import { ethers, utils } from "ethers"
 import { useEffect, useState } from "react"
 import { useRouter } from 'next/router'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css';
-import {addRaffle, getAllRaffles} from '../utils/raffles';
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import { useEthers, useEtherBalance, useContractFunction } from '@usedapp/core'
+import abi from "../utils/RaffleFactory.json"
+import { Contract } from '@ethersproject/contracts'
+
 const create = () => {
-  useEffect(() => {
-    console.log(getAllRaffles());
-  });
+  const { activateBrowserWallet, deactivate, account } = useEthers();
+  const contractABI = abi.abi;
+  const contractAddress ="0x151e946D9EA0a061F7Ca93a449518A8E82b9a817";
+  const contractInterface = new utils.Interface(contractABI);
+
+  const raffleContract = new Contract(contractAddress, contractInterface);
+
+  const { state, send } = useContractFunction(raffleContract, 'createRaffle')
+
   const [fileUrl, setFileUrl] = useState(null)
   const [formInput, updateFormInput] = useState({name: '', description: ''})
   const [tokenAddress, setTokenAddress] = useState('')
@@ -22,11 +31,34 @@ const create = () => {
 
   const router = useRouter()
 
-  const createRaffle = () =>{
-    console.log(formInput)
-    console.log(tokenAddress)
-    console.log(tokenId)
-    console.log(raffleEnd)
+  // const createRaffle = () =>{
+  //   send(tokenAddress, tokenId);
+  // }
+
+  const createRaffle = async() =>{
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const raffleContract = new ethers.Contract(contractAddress, contractABI, signer);
+
+          /*
+        * Execute the actual wave from your smart contract
+        */
+        const raffleCreate = await raffleContract.createRaffle(tokenAddress, tokenId, {gasLimit: 300000});
+        console.log("Mining...", raffleCreate.hash);
+
+        await raffleCreate.wait();
+        console.log("Mined -- ", raffleCreate.hash);
+
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -81,7 +113,7 @@ const create = () => {
               )
             }
           </div>
-          <button onClick={addRaffle()} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
+          <button onClick={createRaffle} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
             create raffle
           </button>
         </div>
