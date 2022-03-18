@@ -12,6 +12,7 @@ import Footer from './components/Footer'
 import { useEthers, useEtherBalance, useContractFunction } from '@usedapp/core'
 import abi from "../utils/RaffleFactory.json"
 import { Contract } from '@ethersproject/contracts'
+import useNFTApprove from '../hooks/useNFTApprove'
 
 const create = () => {
   const { activateBrowserWallet, deactivate, account } = useEthers();
@@ -44,9 +45,10 @@ const create = () => {
         const signer = provider.getSigner();
         const raffleContract = new ethers.Contract(contractAddress, contractABI, signer);
 
-          /*
-        * Execute the actual wave from your smart contract
-        */
+        const nftApprove = await useNFTApprove(tokenAddress, tokenId)
+        console.log("waiting for nft approval");
+        await nftApprove.wait();
+
         const raffleCreate = await raffleContract.createRaffle(tokenAddress, tokenId, {gasLimit: 300000});
         console.log("Mining...", raffleCreate.hash);
 
