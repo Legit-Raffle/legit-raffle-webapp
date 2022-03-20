@@ -37,7 +37,7 @@ const create = () => {
   //nft contract vars
   const nftIface = new utils.Interface([
       'function approve(address to, uint256 tokenId) external',
-      'function getApproved(uint256 tokenId) external view returns (address operator)',
+      'function getApproved(uint256 tokenId) external view returns (address operator)', 
   ])
   const result = useContractCall( library && {
       abi: nftIface,
@@ -56,9 +56,8 @@ const create = () => {
 
   const createRaffle = async() =>{
     try {
-      const { ethereum } = window;
-      nftContract = new Contract(tokenAddress, nftIface, library)
-
+      // const { ethereum } = window;
+      // nftContract = new Contract(tokenAddress, nftIface, library)
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
