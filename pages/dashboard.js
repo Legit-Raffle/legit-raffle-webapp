@@ -5,7 +5,7 @@ import styles from '../styles/Home.module.css'
 import { useEffect, useState } from "react"
 import { useRouter } from 'next/router'
 import { useEthers, useEtherBalance } from '@usedapp/core'
-
+import Card from './components/Card'
 const dashboard = () => {
   const { activateBrowserWallet, deactivate, account } = useEthers()
 
@@ -34,12 +34,17 @@ const dashboard = () => {
         </div>
         }
         {account && 
-          <div>
-            <div>
+          <div >
+            <div className="flex justify-center">
               raffles made
+              <Card/>
+              <Card/>
+
             </div> 
-            <div>
+            <div className="flex justify-center">
               raffles entered
+              <Card/>
+              <Card/>
             </div>
           </div>   
         }
