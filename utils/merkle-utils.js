@@ -27,15 +27,32 @@ export function merkleRoot(addrArray) {
 }
 
 export function merkleProofForIdx(addrArray, idx) {
-    const merkleLeaf = merkleLeaf(addrArray[idx], idx);
+
+    const merkleLeaf =  ethers.utils.solidityKeccak256(
+                                        ["address", "uint256"],
+                                        [addrArray[idx], idx]
+                                        );
+    console.log('merkle leaf', merkleLeaf);
     const entries = addrArray.map((elem, idx) => [elem, idx]);
-    
-    const leaves = entries.map(elem => merkleLeaf(elem[0], elem[1]));
+    console.log('entries',entries);
+
+    const leaves = entries.map(elem => ethers.utils.solidityKeccak256(
+                                        ["address", "uint256"],
+                                        [elem[0], elem[1]]
+                                        ));
+    console.log('leaves',leaves);
 
     const merkleTree = new MerkleTree(
         leaves,      // raw data
         keccak256,   // fn of leaves to compute "up the tree"
         {sort: true} // sort so the tree is deterministic
     );
-    return merkleTree.getProof(merkleLeaf);
+    console.log('merkle tree',merkleTree);
+    console.log('merkle tree proof', merkleTree.getProof(merkleLeaf)[0].data);
+
+    const merkleTreeArray = [];
+    merkleTreeArray.push(Array.from(merkleTree.getProof(merkleLeaf)[0].data))
+    console.log(merkleTreeArray)
+    return merkleTreeArray;
+    // return merkleTree.getProof(merkleLeaf)[0].data;
 }

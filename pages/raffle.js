@@ -12,16 +12,17 @@ import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css';
 import abi from "../utils/Raffle.json"
 import { Contract } from '@ethersproject/contracts'
-import { merkleRoot } from '../utils/merkle-utils'
+import { merkleRoot, merkleProofForIdx } from '../utils/merkle-utils'
 
 const raffle = () => {
+
+  const { account } = useEthers();
 
   const[raffleContractAddress, setRaffleContractAddress] = useState('0x3965f302FF5eF8a8629895A222d008AdB6d4FF48');
   const[list, setList] = useState([]);
   const[listInput, setListInput] = useState([])
   const[listSize, setListSize] = useState(0);
-  const { activateBrowserWallet, deactivate, account } = useEthers();
-
+  const[winnerIdx, setWinnerIdx] = useState(0)
   //raffle vars
   const contractABI = abi.abi;
   const contractInterface = new utils.Interface(contractABI);
@@ -75,9 +76,28 @@ const raffle = () => {
   }
 
   const callClaim = async() =>{
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        console.log(list)
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const raffleContract = new ethers.Contract(raffleContractAddress, contractABI, signer);
 
+        const raffleClaim = await raffleContract.claim(account, winnerIdx, merkleProofForIdx(list, winnerIdx), {gasLimit: 300000});
+        console.log("Mining...", raffleClaim.hash);
+
+        await raffleClaim.wait();
+        console.log("Mined -- ", raffleClaim.hash);
+
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
-  
+
   return (
     <div class=" min-w-screen min-h-screen">
         <Head>
@@ -117,7 +137,12 @@ const raffle = () => {
               <button onClick={callDraw} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
                 draw winner
               </button>
-              <button className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
+              <input
+                placeholder="winner index"
+                className="mt-8 border rounded p-4"
+                onChange={e => setWinnerIdx(e.target.value)}
+              />
+              <button onClick={callClaim} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
                 claim prize
               </button>
             </div>

@@ -17,7 +17,7 @@ const create = () => {
 
   //raffleFactory vars
   const contractABI = abi.abi;
-  const contractAddress ="0x151e946D9EA0a061F7Ca93a449518A8E82b9a817";
+  const contractAddress ="0x17A0434239CE9720803b84136Ea7a707bF354C29";
   const contractInterface = new utils.Interface(contractABI);
 
   const raffleContract = new Contract(contractAddress, contractInterface);
