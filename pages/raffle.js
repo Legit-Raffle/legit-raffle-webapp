@@ -60,7 +60,7 @@ const raffle = () => {
         const signer = provider.getSigner();
         const raffleContract = new ethers.Contract(raffleContractAddress, contractABI, signer);
 
-        const raffleDraw = await raffleContract.finalize(merkleRoot(list), listSize, {gasLimit: 300000});
+        const raffleDraw = await raffleContract.draw({gasLimit: 300000});
         console.log("Mining...", raffleDraw.hash);
 
         await raffleDraw.wait();
@@ -111,11 +111,10 @@ const raffle = () => {
                 className="mt-8 border rounded p-4"
                 onChange={e => setListSize(e.target.value)}
               />
-              <button onClick={(e)=>{ callFinalize()
-              }} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
+              <button onClick={callFinalize} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
                 finalize list
               </button>
-              <button className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
+              <button onClick={callDraw} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
                 draw winner
               </button>
               <button className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
