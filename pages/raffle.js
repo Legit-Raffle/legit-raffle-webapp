@@ -2,7 +2,7 @@ import React from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import { ethers } from "ethers"
+import { ethers, utils } from "ethers"
 import { useEffect, useState } from "react"
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -10,10 +10,74 @@ import { useRouter } from 'next/router'
 import { useEthers, useEtherBalance, useContractFunction } from '@usedapp/core'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css';
+import abi from "../utils/Raffle.json"
+import { Contract } from '@ethersproject/contracts'
+import { merkleRoot } from '../utils/merkle-utils'
 
 const raffle = () => {
+
+  const[raffleContractAddress, setRaffleContractAddress] = useState('0x3965f302FF5eF8a8629895A222d008AdB6d4FF48');
+  const[list, setList] = useState([]);
+  const[listInput, setListInput] = useState([])
+  const[listSize, setListSize] = useState(0);
   const { activateBrowserWallet, deactivate, account } = useEthers();
 
+  //raffle vars
+  const contractABI = abi.abi;
+  const contractInterface = new utils.Interface(contractABI);
+  
+  const callFinalize = async() =>{
+    
+    console.log(list)
+    console.log(list.length)
+
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const raffleContract = new ethers.Contract(raffleContractAddress, contractABI, signer);
+
+        const raffleFinalize = await raffleContract.finalize(merkleRoot(list), listSize, {gasLimit: 300000});
+        console.log("Mining...", raffleFinalize.hash);
+
+        await raffleFinalize.wait();
+        console.log("Mined -- ", raffleFinalize.hash);
+
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const callDraw = async() =>{
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const raffleContract = new ethers.Contract(raffleContractAddress, contractABI, signer);
+
+        const raffleDraw = await raffleContract.finalize(merkleRoot(list), listSize, {gasLimit: 300000});
+        console.log("Mining...", raffleDraw.hash);
+
+        await raffleDraw.wait();
+        console.log("Mined -- ", raffleDraw.hash);
+
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const callClaim = async() =>{
+
+  }
+  
   return (
     <div class=" min-w-screen min-h-screen">
         <Head>
@@ -29,13 +93,28 @@ const raffle = () => {
               <input
                 placeholder="raffle contract address"
                 className="mt-8 border rounded p-4"
-                onChange={e => setTokenAddress(e.target.value)}
+                onChange={e => setRaffleContractAddress(e.target.value)}
               />
+
               <input
                 placeholder="list of raffle entrees"
                 className="mt-8 border rounded p-4"
-                onChange={e => setTokenId(e.target.value)}
+                onChange={e => setListInput(e.target.value)}
               />
+              <button onClick={(e)=>{ setList(list => [...list, listInput])
+                                      console.log(list)
+              }} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
+                add address
+              </button>
+              <input
+                placeholder="size of list"
+                className="mt-8 border rounded p-4"
+                onChange={e => setListSize(e.target.value)}
+              />
+              <button onClick={(e)=>{ callFinalize()
+              }} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
+                finalize list
+              </button>
               <button className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
                 draw winner
               </button>

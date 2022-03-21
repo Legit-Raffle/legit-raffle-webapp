@@ -5,7 +5,6 @@ import styles from '../styles/Home.module.css'
 import { ethers, utils } from "ethers"
 import { useEffect, useState } from "react"
 import { useRouter } from 'next/router'
-import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css';
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -16,7 +15,7 @@ import { Contract } from '@ethersproject/contracts'
 const create = () => {
   const { activateBrowserWallet, deactivate, account, library } = useEthers();
 
-  //raffle vars
+  //raffleFactory vars
   const contractABI = abi.abi;
   const contractAddress ="0x151e946D9EA0a061F7Ca93a449518A8E82b9a817";
   const contractInterface = new utils.Interface(contractABI);
@@ -56,8 +55,7 @@ const create = () => {
 
   const createRaffle = async() =>{
     try {
-      // const { ethereum } = window;
-      // nftContract = new Contract(tokenAddress, nftIface, library)
+      const { ethereum } = window;
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
