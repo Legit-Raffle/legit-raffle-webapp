@@ -5,7 +5,7 @@ import styles from '../styles/Home.module.css'
 import { useEffect, useState } from "react"
 import { useRouter } from 'next/router'
 import { useEthers, useEtherBalance } from '@usedapp/core'
-import Card from './components/Card'
+import Card from '../components/Card'
 const dashboard = () => {
   const { activateBrowserWallet, deactivate, account } = useEthers()
 

@@ -2,7 +2,7 @@ import React from 'react'
 import { useEthers, useEtherBalance } from '@usedapp/core'
 import Link from 'next/link'
 
-const navbar = () => {
+const Navbar = () => {
     const { activateBrowserWallet, deactivate, account } = useEthers()
 
   return (
@@ -41,4 +41,4 @@ const navbar = () => {
     )
 }
 
-export default navbar
+export default Navbar

@@ -1,7 +1,7 @@
 import '../styles/globals.css'
 import { Rinkeby, DAppProvider } from '@usedapp/core';
 import styles from '../styles/Home.module.css';
-import navbar from './components/Navbar';
+import Layout from '../components/Layout';
 
 const config = {
   readOnlyChainId: Rinkeby.chainId,
@@ -13,9 +13,11 @@ const config = {
 function MyApp({ Component, pageProps }) {
 
   return(
-    <DAppProvider config={config}>
-          <Component {...pageProps} />
-    </DAppProvider>
+    <Layout>
+      <DAppProvider config={config}>
+            <Component {...pageProps} />
+      </DAppProvider>
+    </Layout>
   ) 
 }
 
