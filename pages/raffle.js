@@ -1,13 +1,9 @@
 import React from 'react'
 import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
 import { ethers, utils } from "ethers"
 import { useEffect, useState } from "react"
 import { useRouter } from 'next/router'
 import { useEthers, useEtherBalance, useContractFunction } from '@usedapp/core'
-import Calendar from 'react-calendar'
-import 'react-calendar/dist/Calendar.css';
 import abi from "../utils/Raffle.json"
 import { Contract } from '@ethersproject/contracts'
 import { merkleRoot, merkleProofForIdx } from '../utils/merkle-utils'

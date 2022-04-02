@@ -8,6 +8,31 @@ import { useEthers, useEtherBalance } from '@usedapp/core'
 import Card from '../components/Card'
 const dashboard = () => {
   const { activateBrowserWallet, deactivate, account } = useEthers()
+  
+  const getMyRaffles = async() =>{
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const raffleContract = new ethers.Contract(contractAddress, contractABI, signer);
+
+        await nftApprove.wait();
+        console.log("Mined -- ", nftApprove.hash);
+
+        const raffleCreate = await raffleContract.createRaffle(tokenAddress, tokenId, {gasLimit: 300000});
+        console.log("Mining...", raffleCreate.hash);
+
+        await raffleCreate.wait();
+        console.log("Mined -- ", raffleCreate.hash);
+
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <div className="bg-slate-50 min-w-screen min-h-screen">
