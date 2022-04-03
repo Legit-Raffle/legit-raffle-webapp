@@ -16,6 +16,7 @@ const raffle = () => {
   const[list, setList] = useState([]);
   const[listInput, setListInput] = useState([])
   const[listSize, setListSize] = useState(0);
+  const[isFinalized, setIsFinalized] = useState(false);
   const[winnerIdx, setWinnerIdx] = useState(0)
   //raffle vars
   const contractABI = abi.abi;
@@ -114,18 +115,11 @@ const raffle = () => {
                 className="mt-8 border rounded p-4"
                 onChange={e => setListInput(e.target.value)}
               />
-              <button onClick={(e)=>{ setList(list => [...list, listInput])
-                                      console.log(list)
+              <button onClick={(e)=>{ setList(listInput.split(', '),
+                                      setListSize(list.length)),
+                                      callFinalize()
               }} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
                 add address
-              </button>
-              <input
-                placeholder="size of list"
-                className="mt-8 border rounded p-4"
-                onChange={e => setListSize(e.target.value)}
-              />
-              <button onClick={callFinalize} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
-                finalize list
               </button>
               <button onClick={callDraw} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
                 draw winner
