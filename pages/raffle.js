@@ -121,9 +121,16 @@ const raffle = () => {
               }} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
                 add address
               </button>
-              <button onClick={callDraw} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
-                draw winner
-              </button>
+              {isFinalized? 
+                <button onClick={callDraw} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
+                  draw winner
+                </button>
+                    :              
+                <button className="font-bold mt-4 bg-gray-500 text-white rounded p-4 shadow-lg disabled:opacity-50">
+                  draw winner
+                </button>
+              }
+
               <input
                 placeholder="winner index"
                 className="mt-8 border rounded p-4"
