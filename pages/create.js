@@ -9,27 +9,23 @@ import 'react-calendar/dist/Calendar.css';
 import { useEthers, useEtherBalance, useContractFunction, useContractCall } from '@usedapp/core'
 import abi from "../utils/RaffleFactory.json"
 import { Contract } from '@ethersproject/contracts'
-
+import { factoryContractAddress } from '../utils/contract-utils'
 const create = () => {
+  useEffect( async() => {
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    const raffleContract = new ethers.Contract(factoryContractAddress, contractABI, signer);
+    // const raffles = await raffleContract.raffles({gasLimit: 300000});
+    // await raffles.wait();
+    // console.log(raffles);
+  });
   const { activateBrowserWallet, deactivate, account, library } = useEthers();
 
   //raffleFactory vars
   const contractABI = abi.abi;
-  const contractAddress ="0x17A0434239CE9720803b84136Ea7a707bF354C29";
-  const contractInterface = new utils.Interface(contractABI);
-
-  const raffleContract = new Contract(contractAddress, contractInterface);
-
-  // const { state, send } = useContractFunction(raffleContract, 'createRaffle')
-
-
   const [tokenAddress, setTokenAddress] = useState('') // nft contract address
   const [tokenId, setTokenId] = useState(0) //nft id
-
-  // unecessary right now
-  // const [raffleEnd, setRaffleEnd] = useState(new Date())
-  // const [fileUrl, setFileUrl] = useState(null)
-  // const [formInput, updateFormInput] = useState({name: '', description: ''})
+  const [raffleName, setRaffleName] = useState('');
 
   //nft contract vars
   const nftIface = new utils.Interface([
@@ -57,17 +53,17 @@ const create = () => {
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
-        const raffleContract = new ethers.Contract(contractAddress, contractABI, signer);
+        const raffleContract = new ethers.Contract(factoryContractAddress, contractABI, signer);
 
         console.log("waiting for nft approval");
         const nftContract = new ethers.Contract(tokenAddress, nftIface, signer);
-        const nftApprove = await nftContract.approve(contractAddress, tokenId, {gasLimit: 300000});
+        const nftApprove = await nftContract.approve(factoryContractAddress, tokenId, {gasLimit: 300000});
         console.log("Mining...", nftApprove.hash);
 
         await nftApprove.wait();
         console.log("Mined -- ", nftApprove.hash);
 
-        const raffleCreate = await raffleContract.createRaffle(tokenAddress, tokenId, {gasLimit: 300000});
+        const raffleCreate = await raffleContract.createRaffle(tokenAddress, tokenId, raffleName, {gasLimit: 300000});
         console.log("Mining...", raffleCreate.hash);
 
         await raffleCreate.wait();
@@ -92,18 +88,11 @@ const create = () => {
       <div className="flex justify-center">
         <div className="w-1/2 flex flex-col pb-12">
           <h2 className='mt-10 font-bold text-5xl'>create raffle</h2>
-          {/* <input 
+          <input
             placeholder="raffle name"
             className="mt-8 border rounded p-4"
-            name='name'
-            onChange={e => updateFormInput({ ...formInput, name: e.target.value })}
-          /> */}
-          {/* <textarea
-            placeholder="description"
-            className="mt-8 border rounded p-4"
-            name='description'
-            onChange={e => updateFormInput({ ...formInput, description: e.target.value })}
-          /> */}
+            onChange={e => setRaffleName(e.target.value)}
+          />
           <input
             placeholder="token address"
             className="mt-8 border rounded p-4"
@@ -114,24 +103,6 @@ const create = () => {
             className="mt-8 border rounded p-4"
             onChange={e => setTokenId(e.target.value)}
           />
-          {/* <div className="mt-8 border rounded p-4">
-            <p>pick raffle end date</p>
-            <Calendar onChange={setRaffleEnd}className="mt-4"/>
-          </div> */}
-          {/* <div className="mt-8 border rounded p-4">
-            <p>upload raffle thumbnail</p>
-            <input
-              type="file"
-              name="Asset"
-              className="my-4"
-              // onChange={}
-            />
-            {
-              fileUrl && (
-                <img className="rounded mt-4" width="350" src={fileUrl} />
-              )
-            }
-          </div> */}
           <button onClick={createRaffle} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
             create raffle
           </button>

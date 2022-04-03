@@ -28,12 +28,12 @@ const Navbar = () => {
         </div>
         {!account && 
                     <button
-                    class="font-bold text-green-700 bg-green-200 hover:bg-green-300 px-4 py-2 rounded-full"
+                    className="font-bold text-green-700 bg-green-200 hover:bg-green-300 px-4 py-2 rounded-full"
                     onClick={() => activateBrowserWallet()}>connect wallet</button>
         }
         {account && 
                     <button
-                    class="font-bold text-gray-700 bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-full"
+                    className="font-bold text-gray-700 bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-full"
                     onClick={() => deactivate()}>disconnect wallet</button>
         }
         </div>

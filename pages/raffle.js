@@ -9,7 +9,11 @@ import { Contract } from '@ethersproject/contracts'
 import { merkleRoot, merkleProofForIdx } from '../utils/merkle-utils'
 
 const raffle = () => {
-
+  useEffect(() => {
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    const raffleContract = new ethers.Contract(raffleContractAddress, contractABI, signer);
+  });
   const { account } = useEthers();
 
   const[raffleContractAddress, setRaffleContractAddress] = useState('0x3965f302FF5eF8a8629895A222d008AdB6d4FF48');
