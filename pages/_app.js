@@ -2,6 +2,7 @@ import '../styles/globals.css'
 import { Rinkeby, DAppProvider } from '@usedapp/core';
 import styles from '../styles/Home.module.css';
 import Layout from '../components/Layout';
+import Head from 'next/head'
 
 const config = {
   readOnlyChainId: Rinkeby.chainId,
@@ -13,11 +14,16 @@ const config = {
 function MyApp({ Component, pageProps }) {
 
   return(
-    <Layout>
       <DAppProvider config={config}>
-            <Component {...pageProps} />
+            <Head>
+              <title>legit</title>
+              <meta name="legit raffle" content="verifiable onchain raffle" />
+              <link rel="icon" href="/check-mark-button_2705.png" />
+            </Head>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
       </DAppProvider>
-    </Layout>
   ) 
 }
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useEthers, useEtherBalance } from '@usedapp/core'
+import { useEthers } from '@usedapp/core'
 import Link from 'next/link'
 
 const Navbar = () => {
