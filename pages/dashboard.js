@@ -88,22 +88,26 @@ const dashboard = () => {
   //   </div>
   //       )
   // } 
-  if (loaded === 'loaded' && !myRaffles.length) return (<h1 className="px-20 py-10 text-3xl">No items in marketplace</h1>)
+  if (loaded === 'loaded' && !myRaffles.length) return (<h1 className="px-20 py-10 text-3xl">no raffles made</h1>)
   return (
-    <div className="flex justify-center">
+    <div className="min-w-screen min-h-screen flex justify-center">
       <div className="px-4" style={{ maxWidth: '1600px' }}>
+        <div className="text-2xl mb-4 font-bold text-black">my raffles</div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
           {
             myRaffles.map((raffle, i) => (
               <div key={i} className="border shadow rounded-xl overflow-hidden">
                 <div className="p-4">
                   <p style={{ height: '64px' }} className="text-2xl font-semibold">{raffle.name}</p>
-                  <div style={{ height: '70px', overflow: 'hidden' }}>
-                    <p className="text-gray-400">{raffle.address}</p>
+                  <div style={{ height: '120px', overflow: 'hidden' }}>
+                    <p className="text-gray-400 mb-5">raffle contract: {raffle.address}</p>
+                    <p className="text-gray-400">nft contract: {raffle.tokenAddress}</p>
                   </div>
                 </div>
-                <div className="p-4 bg-black">
-                  <p className="text-2xl mb-4 font-bold text-white">{raffle.tokenAddress} ETH</p>
+                <div className="p-4 bg-gray-50 place-content-center">
+                  <button
+                    onClick={()=>{}}
+                    className="hover:text-green-500 text-xl mb-4 font-bold text-black">view raffle</button>
                 </div>
               </div>
             ))
