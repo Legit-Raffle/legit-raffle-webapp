@@ -6,26 +6,55 @@ import { useEffect, useState } from "react"
 import { useRouter } from 'next/router'
 import { useEthers, useEtherBalance } from '@usedapp/core'
 import Card from '../components/Card'
+import { factoryContractAddress, raffleContractAddress, raffleFactoryABI, raffleABI } from '../utils/contract-utils'
+import { ethers } from "ethers"
+
 const dashboard = () => {
+  useEffect(() => {
+    getMyRaffles();
+  },[]);
+
   const { activateBrowserWallet, deactivate, account } = useEthers()
-  
+  const [myRaffles, setMyRaffles] = useState([]);
+  const [raffleCards, setRaffleCards] = useState([]);
+  const [loaded, isLoaded] = useState(false);
+
   const getMyRaffles = async() =>{
     try {
       const { ethereum } = window;
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
-        const raffleContract = new ethers.Contract(contractAddress, contractABI, signer);
+        const raffleFactory = new ethers.Contract(factoryContractAddress, raffleFactoryABI, signer);
 
-        await nftApprove.wait();
-        console.log("Mined -- ", nftApprove.hash);
+        const numRaffles = await raffleFactory.vaultCount();
+        let newRaffles = []
+        for (let i = 0; i < numRaffles; i++) {
+          const raffleAddr = await raffleFactory.vaults(i);
+          const raffle = new ethers.Contract(
+              raffleAddr, raffleABI, provider
+          );
+          const admin = await raffle.admin();
+          if(admin == account){
+            newRaffles = [...newRaffles, raffle];
+            setMyRaffles(newRaffles);
+          }
+        }
 
-        const raffleCreate = await raffleContract.createRaffle(tokenAddress, tokenId, {gasLimit: 300000});
-        console.log("Mining...", raffleCreate.hash);
-
-        await raffleCreate.wait();
-        console.log("Mined -- ", raffleCreate.hash);
-
+        const items = await Promise.all(myRaffles.map(async i =>{
+          const name = await i.name();
+          const address = await i.address;
+          const tokenAddress = await i.token();
+          let item = {
+            name: name,
+            address: address,
+            tokenAddress: tokenAddress
+          }
+          return item
+        }))
+        setRaffleCards(items)
+        console.log(raffleCards)
+        isLoaded(true);
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -34,6 +63,7 @@ const dashboard = () => {
     }
   }
 
+  if(loaded === 'false') return(<h1>Loading...</h1>)
   return (
     <div className="bg-slate-50 min-w-screen min-h-screen">
       <Head>
@@ -43,7 +73,7 @@ const dashboard = () => {
       </Head>
       <main className="bg-slate-50 min-w-screen min-h-screen">
 
-        {!account && 
+        {/* {!account && 
         <div className="flex justify-center">
           <div>
           <div>
@@ -57,25 +87,26 @@ const dashboard = () => {
           onClick={activateBrowserWallet}>connect wallet</button>
           </div>
         </div>
-        }
+        } */}
+        {loaded? <h1>loaded</h1>: <h1>loading</h1>}
         {account && 
           <div >
+            <button onClick={getMyRaffles}>
+              get my raffles
+            </button>
             <div className="flex justify-center">
-              raffles made
-              <Card/>
-              <Card/>
-
+              <h2>raffles made</h2>
+              {
+                raffleCards.map((raffle, i)=>{
+                  <Card key={i} raffle={raffle}/>
+                })
+              }
             </div> 
-            <div className="flex justify-center">
-              raffles entered
-              <Card/>
-              <Card/>
-            </div>
           </div>   
         }
       </main>
   </div>
       )
-}
 
+      }
 export default dashboard

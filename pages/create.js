@@ -11,21 +11,13 @@ import abi from "../utils/RaffleFactory.json"
 import { Contract } from '@ethersproject/contracts'
 import { factoryContractAddress } from '../utils/contract-utils'
 const create = () => {
-  useEffect( async() => {
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = provider.getSigner();
-    const raffleContract = new ethers.Contract(factoryContractAddress, contractABI, signer);
-    // const raffles = await raffleContract.raffles({gasLimit: 300000});
-    // await raffles.wait();
-    // console.log(raffles);
-  });
   const { activateBrowserWallet, deactivate, account, library } = useEthers();
 
   //raffleFactory vars
   const contractABI = abi.abi;
   const [tokenAddress, setTokenAddress] = useState('') // nft contract address
   const [tokenId, setTokenId] = useState(0) //nft id
-  const [raffleName, setRaffleName] = useState('');
+  const [name, setName] = useState('');
 
   //nft contract vars
   const nftIface = new utils.Interface([
@@ -63,7 +55,7 @@ const create = () => {
         await nftApprove.wait();
         console.log("Mined -- ", nftApprove.hash);
 
-        const raffleCreate = await raffleContract.createRaffle(tokenAddress, tokenId, raffleName, {gasLimit: 300000});
+        const raffleCreate = await raffleContract.createRaffle(tokenAddress, tokenId, name, {gasLimit: 300000});
         console.log("Mining...", raffleCreate.hash);
 
         await raffleCreate.wait();
@@ -91,8 +83,9 @@ const create = () => {
           <input
             placeholder="raffle name"
             className="mt-8 border rounded p-4"
-            onChange={e => setRaffleName(e.target.value)}
+            onChange={e => setName(e.target.value)}
           />
+
           <input
             placeholder="token address"
             className="mt-8 border rounded p-4"
