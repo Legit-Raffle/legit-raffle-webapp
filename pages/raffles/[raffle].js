@@ -4,19 +4,17 @@ import { ethers, utils } from "ethers"
 import { useEffect, useState } from "react"
 import { useRouter } from 'next/router'
 import { useEthers, useEtherBalance, useContractFunction } from '@usedapp/core'
-import abi from "../utils/Raffle.json"
+import abi from "../../utils/Raffle.json"
 import { Contract } from '@ethersproject/contracts'
-import { merkleRoot, merkleProofForIdx } from '../utils/merkle-utils'
+import { merkleRoot, merkleProofForIdx } from '../../utils/merkle-utils'
 
 const raffle = () => {
-  useEffect(() => {
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = provider.getSigner();
-    const raffleContract = new ethers.Contract(raffleContractAddress, contractABI, signer);
-  });
+  const router = useRouter()
+  const raffleContractAddress = router.query.raffle
+
   const { account } = useEthers();
 
-  const[raffleContractAddress, setRaffleContractAddress] = useState('0x3965f302FF5eF8a8629895A222d008AdB6d4FF48');
+  // const[raffleContractAddress, setRaffleContractAddress] = useState('0x3965f302FF5eF8a8629895A222d008AdB6d4FF48');
   const[list, setList] = useState([]);
   const[listInput, setListInput] = useState([])
   const[listSize, setListSize] = useState(0);
@@ -108,11 +106,12 @@ const raffle = () => {
           <div className="flex justify-center">
             <div className="w-1/2 flex flex-col pb-12">
               <h2 className='mt-10 font-bold text-5xl'>my raffle</h2>
-              <input
+              <h2 className='mt-10 font-bold text-2xl'>raffle address: {raffleContractAddress}</h2>
+              {/* <input
                 placeholder="raffle contract address"
                 className="mt-8 border rounded p-4"
                 onChange={e => setRaffleContractAddress(e.target.value)}
-              />
+              /> */}
 
               <input
                 placeholder="list of raffle entrees"

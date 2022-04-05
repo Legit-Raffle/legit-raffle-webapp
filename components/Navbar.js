@@ -20,11 +20,6 @@ const Navbar = () => {
                 create raffle
             </a>
             </Link>
-            <Link href="/raffle">
-            <a className="block mr-6 py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 font-bold hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-green-500 md:p-0">
-                my raffle
-            </a>
-            </Link>
         </div>
         {!account && 
                     <button

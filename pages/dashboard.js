@@ -7,7 +7,7 @@ import { useEthers, useEtherBalance } from '@usedapp/core'
 import Card from '../components/Card'
 import { factoryContractAddress, raffleContractAddress, raffleFactoryABI, raffleABI } from '../utils/contract-utils'
 import { ethers } from "ethers"
-
+import Link from 'next/link'
 const dashboard = () => {
   useEffect(() => {
     getMyRaffles();
@@ -105,9 +105,12 @@ const dashboard = () => {
                   </div>
                 </div>
                 <div className="p-4 bg-gray-50 place-content-center">
-                  <button
-                    onClick={()=>{}}
-                    className="hover:text-green-500 text-xl mb-4 font-bold text-black">view raffle</button>
+                  <Link
+                    href={'/raffles/' + raffle.address}
+                    raffleName = {raffle.name}
+                    raffleAddress = {raffle.address}
+                    raffleToken = {raffle.tokenAddress}
+                    className="hover:text-green-500 text-xl mb-4 font-bold text-black">view raffle</Link>
                 </div>
               </div>
             ))
