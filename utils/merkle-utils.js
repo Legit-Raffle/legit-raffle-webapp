@@ -28,20 +28,25 @@ export function merkleRoot(addrArray) {
 
 export function merkleProofForIdx(addrArray, idx) {
 
+    //turn parameters from a tuple of [address, index] to a hash of the tuple
     const merkleLeaf =  ethers.utils.solidityKeccak256(
                                         ["address", "uint256"],
                                         [addrArray[idx], idx]
                                         );
     console.log('merkle leaf', merkleLeaf);
+
+    //turn each addres in the array to a tuple of [address, index]
     const entries = addrArray.map((elem, idx) => [elem, idx]);
     console.log('entries',entries);
 
+    //map through tuple and make a hash of each of them
     const leaves = entries.map(elem => ethers.utils.solidityKeccak256(
                                         ["address", "uint256"],
                                         [elem[0], elem[1]]
                                         ));
     console.log('leaves',leaves);
 
+    //use merkle tree library to construct a merkle tree from the leaves
     const merkleTree = new MerkleTree(
         leaves,      // raw data
         keccak256,   // fn of leaves to compute "up the tree"
@@ -51,6 +56,8 @@ export function merkleProofForIdx(addrArray, idx) {
     console.log('merkle tree proof', merkleTree.getProof(merkleLeaf)[0].data);
 
     const merkleTreeArray = [];
+
+    //creates an array of merkle proofs for each merkle leaf
     merkleTreeArray.push(Array.from(merkleTree.getProof(merkleLeaf)[0].data))
     console.log(merkleTreeArray)
     return merkleTreeArray;

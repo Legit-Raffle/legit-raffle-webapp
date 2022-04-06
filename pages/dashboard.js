@@ -64,30 +64,6 @@ const dashboard = () => {
     console.log(loaded)
   }
 
-  // if(loaded === 'not-loaded' && !myRaffles.length){
-  //   return(<h1>Loading...</h1>)
-  // } else{
-  //   return (
-  //     <div className="bg-slate-50 min-w-screen min-h-screen">
-  //       <main className="bg-slate-50 min-w-screen min-h-screen">
-  //         {loaded? <h1>loaded</h1>: <h1>loading</h1>} 
-  //           <div >
-  //             <button onClick={getMyRaffles}>
-  //               get my raffles
-  //             </button>
-  //             <div className="flex justify-center">
-  //               <h2>raffles made</h2>
-  //               {
-  //                 myRaffles.map((raffle, i)=>{
-  //                   <div key={i}>{raffle.name}</div>
-  //                 })
-  //               }
-  //             </div> 
-  //           </div>   
-  //       </main>
-  //   </div>
-  //       )
-  // } 
   if (loaded === 'loaded' && !myRaffles.length) return (<h1 className="px-20 py-10 text-3xl">no raffles made</h1>)
   return (
     <div className="min-w-screen min-h-screen flex justify-center">
