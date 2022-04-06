@@ -9,9 +9,9 @@ import { Contract } from '@ethersproject/contracts'
 import { merkleRoot, merkleProofForIdx } from '../../utils/merkle-utils'
 
 const raffle = () => {
+
   const router = useRouter()
   const raffleContractAddress = router.query.raffle
-
   const { account } = useEthers();
 
   // const[raffleContractAddress, setRaffleContractAddress] = useState('0x3965f302FF5eF8a8629895A222d008AdB6d4FF48');
@@ -19,11 +19,14 @@ const raffle = () => {
   const[listInput, setListInput] = useState([])
   const[listSize, setListSize] = useState(0);
   const[isFinalized, setIsFinalized] = useState(false);
-  const[winnerIdx, setWinnerIdx] = useState(0)
+  const[isDrawn, setIsDrawn] = useState(false);
+  const[winnerIdx, setWinnerIdx] = useState(0);
+  const[loaded, isLoaded] = useState("not-loaded");
+
   //raffle vars
   const contractABI = abi.abi;
   const contractInterface = new utils.Interface(contractABI);
-  
+
   const callFinalize = async() =>{
     
     console.log(list)
@@ -41,6 +44,7 @@ const raffle = () => {
 
         await raffleFinalize.wait();
         console.log("Mined -- ", raffleFinalize.hash);
+        setIsFinalized(true);
 
       } else {
         console.log("Ethereum object doesn't exist!");
@@ -63,7 +67,7 @@ const raffle = () => {
 
         await raffleDraw.wait();
         console.log("Mined -- ", raffleDraw.hash);
-
+        setIsDrawn(true);
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -81,6 +85,8 @@ const raffle = () => {
         const signer = provider.getSigner();
         const raffleContract = new ethers.Contract(raffleContractAddress, contractABI, signer);
 
+        console.log(account);
+        console.log(winnerIdx);
         const raffleClaim = await raffleContract.claim(account, winnerIdx, merkleProofForIdx(list, winnerIdx), {gasLimit: 300000});
         console.log("Mining...", raffleClaim.hash);
 
@@ -95,6 +101,7 @@ const raffle = () => {
     }
   }
 
+  // if (loaded === 'not-loaded') return (<h1 className="px-20 py-10 text-3xl">Loading</h1>)
   return (
     <div class=" min-w-screen min-h-screen">
         <Head>
@@ -116,32 +123,29 @@ const raffle = () => {
               <input
                 placeholder="list of raffle entrees"
                 className="mt-8 border rounded p-4"
-                onChange={e => setListInput(e.target.value)}
+                onChange={e => setList(e.target.value.split(', '))}
               />
-              <button onClick={(e)=>{ setList(listInput.split(', '),
-                                      setListSize(list.length)),
-                                      callFinalize()
-              }} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
-                add address
+              <input
+                placeholder="number of raffle entrees"
+                className="mt-8 border rounded p-4"
+                onChange={e => setListSize(e.target.value)}
+              />
+              <button onClick={(e)=>{callFinalize()}} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
+                finalize list
               </button>
-              {isFinalized? 
+
                 <button onClick={callDraw} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
                   draw winner
                 </button>
-                    :              
-                <button className="font-bold mt-4 bg-gray-500 text-white rounded p-4 shadow-lg disabled:opacity-50">
-                  draw winner
-                </button>
-              }
 
-              <input
-                placeholder="winner index"
-                className="mt-8 border rounded p-4"
-                onChange={e => setWinnerIdx(e.target.value)}
-              />
-              <button onClick={callClaim} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
-                claim prize
-              </button>
+                  <input
+                    placeholder="winner index"
+                    className="mt-8 border rounded p-4"
+                    onChange={e => setWinnerIdx(e.target.value)}
+                  />
+                  <button onClick={callClaim} className="font-bold mt-4 bg-green-500 text-white rounded p-4 shadow-lg hover:bg-green-700">
+                    claim prize
+                  </button>
             </div>
           </div>
         </main>
