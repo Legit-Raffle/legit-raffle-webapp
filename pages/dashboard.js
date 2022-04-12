@@ -8,6 +8,7 @@ import Card from '../components/Card'
 import { factoryContractAddress, raffleContractAddress, raffleFactoryABI, raffleABI } from '../utils/contract-utils'
 import { ethers } from "ethers"
 import Link from 'next/link'
+import CardsLoading from '../components/CardsLoading'
 const dashboard = () => {
   useEffect(() => {
     getMyRaffles();
@@ -65,6 +66,12 @@ const dashboard = () => {
   }
 
   if (loaded === 'loaded' && !myRaffles.length) return (<h1 className="px-20 py-10 text-3xl">no raffles made</h1>)
+  if (loaded === 'not-loaded' && !myRaffles.length) return (
+  <>
+    <div className="text-2xl mb-4 font-bold text-black">my raffles</div>
+    <CardsLoading/>
+  </>
+  )
   return (
     <div className="min-w-screen min-h-screen flex justify-center">
       <div className="px-4" style={{ maxWidth: '1600px' }}>
